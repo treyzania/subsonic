@@ -1,15 +1,23 @@
 #!/bin/bash
 
+# Make sure we're in a sane location before we do *anything*.
+cd $(dirname $(realpath $0))
+
 builddir=build
-crossfile=cross.conf
+toolchaincfg=toolchain.conf
 
 if [ -e $builddir ]; then
-	echo 'already built, remove the `'$builddir'` directory'
+	echo $0': already built, remove the `'$builddir'` directory'
+	exit 1
+fi
+
+if [ ! -f $toolchaincfg ]; then
+	echo $0': no toolchain configuration found, need to generate a toolchain.conf?'
 	exit 1
 fi
 
 # Pull in our cross-compilation toolchain arguments.
-source toolchain.conf
+source $toolchaincfg
 
 # Now enable printing all the annoying things.
 set -ex
@@ -30,7 +38,7 @@ function compile_asm() {
 	src=$1
 	output=$builddir/obj/$2
 	mkdir -p $(dirname $output)
-	$ASMINVOKE ./$component/$src -o $output
+	$ASMINVOKE $AS_ARGS ./$component/$src -o $output
 }
 
 # C compiler wrapper.
@@ -38,7 +46,7 @@ function compile_c() {
 	src=$1
 	output=$builddir/obj/$2
 	mkdir -p $(dirname $output)
-	$CCINVOKE ./$component/$src -o $output
+	$CCINVOKE $CC_ARGS ./$component/$src -o $output
 }
 
 # Rust compiler wrapper.
@@ -46,7 +54,7 @@ function compile_rust() {
 	src=$1
 	output=$builddir/obj/$2
 	mkdir -p $(dirname $output)
-	$RUSTCINVOKE ./$component/$src -o $output
+	$RUSTCINVOKE $RUSTC_ARGS ./$component/$src -o $output
 }
 
 # Since functions are executed in their own subprocesses, we keep all of our

@@ -1,0 +1,47 @@
+/*
+ * Kernel entry for amd64 arch
+ */
+
+/* ==== Header Settings ==== */
+
+# Multiboot settings
+.set MB_ALIGN 1 << 0
+.set MB_MEMINFO 1 << 1
+.set MB_FLAGS ALIGN | MEMINFO
+.set MB_MAGIC 0x1BADB002
+.set MB_CHECKSUM -(MAGIC + FLAGS)
+
+# The actual multiboot header.
+	.section .multiboot
+	.align 4
+	.long MAGIC
+	.long FLAGS
+	.long CHECKSUM
+
+/* ==== Resources ==== */
+
+# Now set up our bootstrapping stack.
+	.section .bss
+	.align 16
+stack_bottom:
+	.skip 16384
+stack_top:
+
+/* ==== Active Code ==== */
+
+	.section .text
+
+	# _start: the kernel entry point
+	.global _start
+	.type _start, @function
+_start:
+	mov $stack_top, %esp
+	call kernel_init
+	cli
+	hlt
+
+_oops:
+	jmp _oops
+
+	# "Debugging"
+	.size _start, . - _start

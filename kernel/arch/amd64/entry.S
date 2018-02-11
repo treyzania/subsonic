@@ -5,11 +5,11 @@
 /* ==== Header Settings ==== */
 
 # Multiboot settings
-.set MB_ALIGN 1 << 0
-.set MB_MEMINFO 1 << 1
-.set MB_FLAGS ALIGN | MEMINFO
-.set MB_MAGIC 0x1BADB002
-.set MB_CHECKSUM -(MAGIC + FLAGS)
+.set MB_ALIGN, 1 << 0
+.set MB_MEMINFO, 1 << 1
+.set MB_FLAGS, MB_ALIGN | MB_MEMINFO
+.set MB_MAGIC, 0x1BADB002
+.set MB_CHECKSUM, -(MB_MAGIC + MB_FLAGS)
 
 # The actual multiboot header.
 	.section .multiboot

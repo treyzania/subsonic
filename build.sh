@@ -31,7 +31,7 @@ export CCINVOKE="$CC -c -ffreestanding -nostdlib -Iinclude"
 export RUSTCINVOKE="$RUSTC --crate-type cdylib --emit obj"
 
 # This is for later
-export component=
+component=
 
 # Assembler wrapper.
 function compile_asm() {
@@ -60,12 +60,14 @@ function compile_rust() {
 # Since functions are executed in their own subprocesses, we keep all of our
 # variables but get a new context to mess around in.
 function build_component() {
+	oldcomp=$component
 	if [ -z "$component" ]; then
-		export component=$1
+		component=$1
 	else
-		export component=$component/$1
+		component=$component/$1
 	fi
 	source $component/build.sh
+	component=$oldcomp
 }
 
 # Now we actually build things.

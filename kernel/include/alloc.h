@@ -4,4 +4,4 @@
 #include <types.h>
 #include "page.h"
 
-void kmalloc(size_t len);
+void* kmalloc(size_t len);

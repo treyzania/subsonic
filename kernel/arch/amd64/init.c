@@ -1,4 +1,5 @@
 #include <kernel.h>
+#include <libk.h>
 
 void kernel_init(void) {
 

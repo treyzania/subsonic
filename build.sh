@@ -27,7 +27,7 @@ mkdir -p $builddir/{bin,codegen,obj}
 # Figure out how we invoke gcc.
 export asminvoke="$ASSEMBLER"
 export ccinvoke="$CC -c -ffreestanding -nostdlib -Iinclude"
-export rustcinvoke="$RUSTC --crate-type cdylib --emit obj"
+export rustcinvoke="$RUSTC --crate-type staticlib -C panic=abort"
 
 # This is for later
 export component=
@@ -36,5 +36,5 @@ export component=
 source util.sh
 
 # Now we actually build things.
-build_component kernel
 build_component util
+build_component kernel

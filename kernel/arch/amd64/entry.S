@@ -14,9 +14,9 @@
 # The actual multiboot header.
 	.section .multiboot
 	.align 4
-	.long MAGIC
-	.long FLAGS
-	.long CHECKSUM
+	.long MB_MAGIC
+	.long MB_FLAGS
+	.long MB_CHECKSUM
 
 /* ==== Resources ==== */
 
@@ -35,6 +35,11 @@ stack_top:
 	.global _start
 	.type _start, @function
 _start:
+	# This prints "OKAY" to the VGA screen.
+	mov 0x2f592f412f4b2f4f, %rax
+	mov %rax, (0xb8000)
+
+	# Now we set up to call into the C init code.
 	mov $stack_top, %esp
 	call kernel_init
 	cli

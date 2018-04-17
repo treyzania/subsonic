@@ -76,7 +76,8 @@ class StepContext():
             "-o", out,
             '-ffreestanding',
             '-nostdlib',
-            '-std=gnu99'
+            '-std=gnu99',
+            '-mno-red-zone'
         ]
         cmd.extend(toolchain['cc_args'])
         cmd.extend(exargs)
@@ -88,7 +89,7 @@ class StepContext():
         return name
 
     def compile_rust(self, name, src, exargs=[]):
-        out = self.__get_obj_artifact_path(name)
+        out = self.__get_obj_artifact_path(name + '.a')
         cmd = [
             toolchain['rustc'],
             "-o", out,
@@ -108,6 +109,7 @@ class StepContext():
             toolchain['linker'],
             '-o', out,
             '-T', linkdoc,
+            '-nostdlib'
         ]
         cmd.extend(toolchain['ld_args'])
         for p in parts:

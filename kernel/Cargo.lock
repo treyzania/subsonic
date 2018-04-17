@@ -1,0 +1,11 @@
+[[package]]
+name = "compiler_builtins"
+version = "0.1.0"
+
+[[package]]
+name = "subsonic_kernel"
+version = "0.1.0"
+dependencies = [
+ "compiler_builtins 0.1.0",
+]
+

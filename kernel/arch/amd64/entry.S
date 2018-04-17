@@ -36,8 +36,8 @@ stack_top:
 	.type _start, @function
 _start:
 	# This prints "OKAY" to the VGA screen.
-	mov 0x2f592f412f4b2f4f, %rax
-	mov %rax, (0xb8000)
+	mov %rax, 0x2f592f412f4b2f4f
+	mov (0xb8000), %rax
 
 	# Now we set up to call into the C init code.
 	mov $stack_top, %esp

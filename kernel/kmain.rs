@@ -1,5 +1,7 @@
 #![no_std]
 #![feature(lang_items)]
+#![feature(compiler_builtins_lib)]
+extern crate compiler_builtins;
 
 #[lang = "panic_fmt"]
 extern fn panic_fmt(_: ::core::fmt::Arguments, _: &'static str, _: u32) -> ! {

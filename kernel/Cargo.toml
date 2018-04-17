@@ -1,0 +1,11 @@
+[package]
+name = "subsonic_kernel"
+version = "0.1.0"
+authors = ["treyzania <treyzania@gmail.com>"]
+
+[lib]
+name = "subsonic_kernel_core"
+path = "kmain.rs"
+
+[dependencies]
+compiler_builtins = { path = "../vendor/compiler-builtins" }

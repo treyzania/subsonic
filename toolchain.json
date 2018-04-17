@@ -1,0 +1,10 @@
+{
+	"assembler": "as",
+	"assembler_args": [],
+	"cc": "gcc",
+	"cc_args": [],
+	"rustc": "rustc",
+	"rustc_args": [],
+	"linker": "ld",
+	"ld_args": []
+}

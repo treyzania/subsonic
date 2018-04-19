@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 if [ -z "$1" ]; then
 	echo 'must specify an architecture!'
 	exit 1

@@ -4,7 +4,6 @@ import copy
 import json
 import subprocess
 
-arch = 'amd64'
 builddir = 'build'
 bindir = os.path.join(builddir, 'bin')
 objdir = os.path.join(builddir, 'obj')
@@ -74,6 +73,8 @@ class StepContext():
             toolchain['cc'],
             '-c',
             "-o", out,
+            '-O2',
+            '-Wall', '-Wextra',
             '-ffreestanding',
             '-nostdlib',
             '-std=gnu99',
@@ -92,8 +93,9 @@ class StepContext():
         out = self.__get_obj_artifact_path(name + '.a')
         cmd = [
             toolchain['rustc'],
-            "-o", out,
+            '-o', out,
             '--crate-type=staticlib',
+            #'--target', os.path.join('toolchain', 'llvm-%s.json' % self.arch())
         ]
         cmd.extend(toolchain['rustc_args'])
         cmd.extend(exargs)
@@ -119,6 +121,9 @@ class StepContext():
 
     def get_obj_dir(self):
         return objdir
+
+    def arch(self):
+        return toolchain['arch']
 
     def add_artifact(self, name, path):
         artifacts[name] = {

@@ -1,3 +1,6 @@
 [submodule "vendor/compiler-builtins"]
 	path = vendor/compiler-builtins
 	url = https://github.com/rust-lang-nursery/compiler-builtins.git
+[submodule "toolchain/crosscompiler"]
+	path = toolchain/crosscompiler
+	url = https://github.com/travisg/toolchains.git

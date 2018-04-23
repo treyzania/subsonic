@@ -22,7 +22,7 @@ if tc is None:
 phases = []
 artifacts = {}
 
-base_c_includes = ['include']
+base_c_includes = []
 __cur_context = []
 
 def __output_name_for(name):
@@ -53,8 +53,7 @@ class StepContext():
         out = self.__get_obj_artifact_path(name + '.o')
         cmd = [
             toolchain['assembler'],
-            '-c',
-            "-o", out,
+            '-o', out,
         ]
         cmd.extend(toolchain['assembler_args'])
         cmd.extend(exargs)
@@ -71,19 +70,16 @@ class StepContext():
         out = self.__get_obj_artifact_path(name + '.o')
         cmd = [
             toolchain['cc'],
-            '-c',
-            "-o", out,
-            '-O2',
-            '-Wall', '-Wextra',
-            '-ffreestanding',
-            '-nostdlib',
+            '-c', os.path.join(self.__get_context_name(delim='/'), src),
+            '-o', out,
             '-std=gnu99',
-            '-mno-red-zone'
+            '-ffreestanding',
+            '-Ofast',
+            '-Wall'
         ]
         cmd.extend(toolchain['cc_args'])
         cmd.extend(exargs)
         cmd.extend(self.__get_include_args())
-        cmd.append(os.path.join(self.__get_context_name(delim='/'), src))
         print(cmd)
         subprocess.run(cmd)
         self.add_artifact(name, out)
@@ -91,11 +87,16 @@ class StepContext():
 
     def compile_rust(self, name, src, exargs=[]):
         out = self.__get_obj_artifact_path(name + '.a')
+        tarch = self.arch()
+        if tarch == 'amd64':
+            tarch = 'x86_64' # Liars.
         cmd = [
             toolchain['rustc'],
             '-o', out,
             '--crate-type=staticlib',
-            #'--target', os.path.join('toolchain', 'llvm-%s.json' % self.arch())
+            '-C', 'no-redzone',
+            #'-C', 'target-cpu=' + tarch,
+            #'--target=' + os.path.join('toolchain', '%s-subsonic.json' % tarch)
         ]
         cmd.extend(toolchain['rustc_args'])
         cmd.extend(exargs)
@@ -109,13 +110,15 @@ class StepContext():
         out = os.path.join(bindir, name)
         cmd = [
             toolchain['linker'],
-            '-o', out,
             '-T', linkdoc,
+            '-o', out,
+            '-ffreestanding',
+            '-Ofast',
             '-nostdlib'
         ]
-        cmd.extend(toolchain['ld_args'])
         for p in parts:
             cmd.append(self.find_obj_artifact_path(p))
+        cmd.extend(toolchain['ld_args'])
         print(cmd)
         subprocess.run(cmd)
 

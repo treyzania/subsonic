@@ -1,4 +1,4 @@
-#include <page.h>
+#include <kernel.h>
 
 static inline void page_bitmap_set(size_t pi, uint8_t state) {
 
@@ -15,7 +15,7 @@ static inline void page_bitmap_set(size_t pi, uint8_t state) {
 static inline uint8_t page_bitmap_get(size_t pi) {
 	uint8_t* p = (&heap_region_start) + (pi / 8);
 	uint8_t subbyte_index = 7 - pi % 8;
-	return (*p & (1 << subbyte_index) != 0) ? 1 : 0;
+	return ((*p & (1 << subbyte_index)) != 0) ? 1 : 0;
 }
 
 static size_t find_free_page_index() {

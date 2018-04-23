@@ -1,8 +1,8 @@
 #include <libk.h>
 
-size_t strlen(char* str, size_t max) {
+size_t strlen(const char* str) {
 	size_t i = 0;
-	while (str[i] != 0 && i < max) {
+	while (str[i] != 0) {
 		i++;
 	}
 	return i;

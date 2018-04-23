@@ -5,6 +5,7 @@ sys.path.append('toolchain')
 
 import buildlib
 
+buildlib.base_c_includes.append('include')
 buildlib.add_phase('prep')
 buildlib.add_phase('compile')
 buildlib.add_phase('link')

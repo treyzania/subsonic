@@ -4,7 +4,6 @@
 .set FLAGS,    ALIGN | MEMINFO  /* this is the Multiboot 'flag' field */
 .set MAGIC,    0x1BADB002       /* 'magic number' lets bootloader find the header */
 .set CHECKSUM, -(MAGIC + FLAGS) /* checksum of above, to prove we are multiboot */
-.extern kernel_init
 
 /*
 Declare a multiboot header that marks the program as a kernel. These are magic
@@ -44,7 +43,6 @@ doesn't make sense to return from this function as the bootloader is gone.
 */
 .section .text
 .global _start
-.globl _start
 .type _start, @function
 _start:
 	/*
@@ -86,7 +84,7 @@ _start:
 	stack since (pushed 0 bytes so far) and the alignment is thus
 	preserved and the call is well defined.
 	*/
-	call kernel_init
+	call kernel_main
 
 	/*
 	If the system has nothing more to do, put the computer into an

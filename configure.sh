@@ -1,30 +1,34 @@
 #!/bin/bash
 
-set -ex
+set -e
 
-arch=amd64
+arch=i686
 
 crossas=
 crosscc=
-crossld=
 
-BUILDDIR=toolchain/crossbuild
+bindir=
 
 if [ "$1" == "--compile" ]; then
-	if [ ! -d "$BUILDDIR" ]; then
+	source toolchain/crosscompiler/toolvers
+	BUILDDIR=toolchain/crossbuild
+	# This will need changing when/if we add support for arm.
+	binexpr=$arch-elf-$GCCVER-$(uname)-$(uname -m)
+	if [ ! -d "$BUILDDIR/$binexpr/bin" ]; then
 		mkdir -p $BUILDDIR
 		pushd toolchain/crosscompiler
-		./doit -f -a "$arch" -o toolchain/crossbuild
+		./doit -f -a "$arch" -o $BUILDDIR
 		popd
 	fi
-	bindir=$(ls -d $BUILDDIR/$arch-*/bin)
-	crossas=$(find $bindir -name '*as' -executable)
-	crosscc=$(find $bindir -name '*gcc' -executable)
-	crossld=$(find $bindir -name '*ld' -executable)
+	echo 'Out dir name:' $binexpr
+	bindir=$(ls -d $BUILDDIR/$binexpr/bin)
 else
-	echo 'not yet implemented!'
-	exit 1
+	bindir=$(realpath $1)
 fi
+
+# This is where we actually find the executables.
+crossas=$(find $bindir -name '*as' -executable)
+crosscc=$(find $bindir -name '*gcc' -executable)
 
 tcjson=toolchain.json
 
@@ -36,6 +40,7 @@ fi
 rm -f $tcjson
 touch $tcjson
 
+echo 'Generating toolchain.json...'
 echo "{" >> $tcjson
 echo "	\"arch\": \"$arch\"," >> $tcjson
 echo "	\"assembler\": \"$crossas\"," >> $tcjson
@@ -44,6 +49,6 @@ echo "	\"cc\": \"$crosscc\"," >> $tcjson
 echo "	\"cc_args\": []," >> $tcjson
 echo "	\"rustc\": \"rustc\"," >> $tcjson
 echo "	\"rustc_args\": []," >> $tcjson
-echo "	\"linker\": \"$crosscc\"," >> $tcjson # this is supposed to be gcc not ld
+echo "	\"linker\": \"$crosscc\"," >> $tcjson # This is indeed supposed to be gcc not ld because of `-lgcc`, for now.
 echo "	\"ld_args\": [\"-lgcc\"]" >> $tcjson
 echo "}" >> $tcjson

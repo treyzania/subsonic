@@ -2,10 +2,11 @@ import buildlib
 
 def compile_kernel(ctx):
     ctx.add_c_include('include')
-    ctx.compile_c('alloc', 'mm/alloc.c')
-    ctx.compile_c('page', 'mm/page.c')
-    ctx.compile_asm('preinit', 'arch/x86/entry.S')
+    #ctx.compile_c('alloc', 'mm/alloc.c')
+    #ctx.compile_c('page', 'mm/page.c')
+    ctx.compile_asm('start', 'arch/x86/start.S')
     ctx.compile_c('init', 'arch/x86/init.c')
+    ctx.compile_c('vgaterm', 'arch/x86/terminal.c')
     ctx.compile_rust('kmain', 'kmain.rs',
         exargs=[
             '--extern',
@@ -14,10 +15,11 @@ def compile_kernel(ctx):
 
 def link_kernel(ctx):
     kobjs = [
-        'preinit',
+        'start',
         'init',
-        'page',
-        'alloc',
+        'vgaterm',
+        #'page',
+        #'alloc',
         'compiler-builtins',
         'kmain',
         'mem',
